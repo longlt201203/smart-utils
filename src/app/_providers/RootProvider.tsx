@@ -5,9 +5,9 @@ import { PropsWithChildren } from "react";
 
 export default function RootProvider({ children }: PropsWithChildren) {
     return (
-        <GeistProvider>
-          <CssBaseline/>
-          {children}
-        </GeistProvider>
+      <GeistProvider>
+        <CssBaseline/>
+        {children}
+      </GeistProvider>
     );
 }

@@ -1,9 +1,11 @@
-import { Page } from "@geist-ui/core";
+import UserWelcome from "@/app/_components/UserWelcome";
+import { Page, Text } from "@geist-ui/core";
 
 export default function PageHeader() {
     return (
         <Page.Header>
-            <h2 className="text-center">Smart Utils</h2>
+            <Text h2 className="text-center">Smart Utils</Text>
+            <UserWelcome/>
         </Page.Header>
     );
 }

@@ -1,9 +1,12 @@
+"use client"
+
 import Calculator from "@/app/(main)/calculator/_components/Calculator";
+import { Text } from "@geist-ui/core";
 
 export default function CalculatorPage() {
     return (
         <div className="w-full">
-            <h2>Calculator</h2>
+            <Text h2>Calculator</Text>
             <Calculator/>
         </div>
     );

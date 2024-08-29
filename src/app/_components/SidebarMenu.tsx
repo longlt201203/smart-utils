@@ -1,35 +1,12 @@
-import { Link, Text } from "@geist-ui/core";
-import NextLink from "next/link";
+import SidebarMenuSection from "@/app/_components/SidebarMenuSection";
+import { SidebarMenuProps } from "@/app/_types";
 
-const menuItems = [
-    {
-        key: "about",
-        label: "About"
-    },
-    {
-        key: "calculator",
-        label: "Calculator"
-    },
-    {
-        key: "key3",
-        label: "Label 3"
-    },
-    {
-        key: "key4",
-        label: "Label 4"
-    },
-];
-
-export default function SidebarMenu() {
+export default function SidebarMenu(props: SidebarMenuProps) {
     return (
-        <>
-            {menuItems.map(item => (
-                <Text>
-                    <NextLink className="text-black" key={item.key} href={item.key}>
-                        {item.label}
-                    </NextLink>
-                </Text>
+        <div className="flex flex-col gap-8">
+            {props.data?.map((item) => (
+                <SidebarMenuSection key={item.key} label={item.label} items={item.items} />
             ))}
-        </>
+        </div>
     );
 }

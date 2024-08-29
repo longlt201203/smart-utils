@@ -16,6 +16,6 @@ export default function FormulaInput({
             onPointerLeaveCapture={undefined}
             crossOrigin={undefined}
             scale={4/3}
-            placeholder="Formula" />
+            placeholder="Formula. Example: 2+10*(2+3*(2-1))" />
     );
 }

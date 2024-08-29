@@ -9,7 +9,7 @@ import { PropsWithChildren } from "react";
 export default function MainLayout({ children }: PropsWithChildren) {
     return (
         <Page>
-            <PageHeader/>
+            <PageHeader />
             <Page.Content>
                 <Grid.Container gap={2} justify="center">
                     <Grid xs={6}>

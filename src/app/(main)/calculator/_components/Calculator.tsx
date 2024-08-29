@@ -1,9 +1,10 @@
 "use client"
 
+import CheatSheet from "@/app/(main)/calculator/_components/CheatSheet";
 import FormulaInput from "@/app/(main)/calculator/_components/FormulaInput";
+import FuntionCode from "@/app/(main)/calculator/_components/FunctionCode";
 import ResultDisplayer from "@/app/(main)/calculator/_components/ResultDisplayer";
-import { OperationTree } from "@/app/(main)/calculator/_lib/OperationTree";
-import { Spacer } from "@geist-ui/core";
+import { Spacer, Text } from "@geist-ui/core";
 import { useState } from "react";
 
 export default function Calculator() {
@@ -11,7 +12,20 @@ export default function Calculator() {
     const [result, setResult] = useState<string>("");
 
     const calculate = (formula: string) => {
-        OperationTree.construct(formula);
+        if (formula) {
+            try {
+                const regex = /^[0-9e+\-*/%().\s]+$/;
+                if (!regex.test(formula)) {
+                    throw new Error("Invalid formula!");
+                }
+                const result = new Function(`return (${formula});`)();
+                setResult(result);
+            } catch (error) {
+                setResult(`Error: ${(error as Error).message}`);
+            }
+        } else {
+            setResult("");
+        }
     }
 
     return (
@@ -25,6 +39,10 @@ export default function Calculator() {
                     calculate(e.target.value);
                 }}
             />
+            <Spacer h={1} />
+            <CheatSheet/>
+            <Spacer h={1} />
+            <FuntionCode/>
         </div>
     );
 }
