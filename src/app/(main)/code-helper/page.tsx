@@ -18,6 +18,12 @@ const data = [
         code: "server {\r\n    listen 80;\r\n    server_name localhost;\r\n\r\n    root /usr/share/nginx/html;\r\n    index index.html;\r\n\r\n    location / {\r\n        try_files $uri $uri/ /index.html;\r\n    }\r\n\r\n    location /static/ {\r\n        alias /usr/share/nginx/html/static/;\r\n    }\r\n\r\n    error_page 404 /index.html;\r\n}",
         language: "properties"
     },
+    {
+        key: "postgres-docker-compose",
+        label: "Postgres Docker Compose",
+        code: "version: '3.9'\r\nservices:\r\n  db:\r\n    container_name: postgres_db\r\n    image: postgres:14.13\r\n    ports:\r\n      - 5432:5432\r\n    volumes:\r\n      - db_vol:/var/lib/postgresql/data\r\n    environment:\r\n      POSTGRES_PASSWORD: ...\r\n      POSTGRES_USER: ...\r\n      POSTGRES_DB: ...\r\n\r\nvolumes:\r\n  db_vol:",
+        language: "yaml"
+    }
 ];
 
 export default function CodeHelperPage() {

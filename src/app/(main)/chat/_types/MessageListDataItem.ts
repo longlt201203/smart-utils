@@ -1,7 +1,6 @@
 import React from "react";
 
-export interface MessageItemProps {
-    position: "left" | "right";
+export interface MessageListDataItem {
     name: string;
     content: string | React.ReactNode;
 }
