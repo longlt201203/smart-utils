@@ -4,4 +4,5 @@ export interface SidebarMenuSectionProps {
     key: string;
     label: string;
     items: SidebarMenuItemProps[];
+    authenticated?: boolean;
 }

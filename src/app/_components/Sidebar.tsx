@@ -24,9 +24,16 @@ const sidebarData: SidebarMenuSectionProps[] = [
             },
             {
                 key: "chat",
-                label: "Chat"
+                label: "Chat",
+                authenticated: true
             }
         ]
+    },
+    {
+        key: "management",
+        label: "Management",
+        items: [],
+        authenticated: true
     },
     {
         key: "authentication",
@@ -34,20 +41,22 @@ const sidebarData: SidebarMenuSectionProps[] = [
         items: [
             {
                 key: "api/auth/signin",
-                label: "Login"
+                label: "Login",
+                authenticated: false
             },
             {
                 key: "api/auth/signout",
-                label: "Logout"
+                label: "Logout",
+                authenticated: true
             }
         ]
     }
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ authenticated }: { authenticated?: boolean }) {
     return (
         <div>
-            <SidebarMenu data={sidebarData} />
+            <SidebarMenu authenticated={authenticated}  data={sidebarData} />
         </div>
     );
 }

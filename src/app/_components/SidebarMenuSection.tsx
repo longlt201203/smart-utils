@@ -6,7 +6,7 @@ export default function SidebarMenuSection(props: SidebarMenuSectionProps) {
     return (
         <div>
             <Text h5>{props.label}</Text>
-            {props.items.map((item) => (
+            {props.items.filter((item) => item.authenticated == undefined || item.authenticated == props.authenticated).map((item) => (
                 <Text key={item.key}>
                     <NextLink className="text-black" href={item.key}>
                         {item.label}
