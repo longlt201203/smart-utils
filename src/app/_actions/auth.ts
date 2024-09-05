@@ -1,7 +1,9 @@
 "use server";
 
 import { PrismaSingleton } from "@/prisma";
-import { GoogleTokenResponse } from "./_types";
+import { GoogleTokenInfoResponse, GoogleTokenResponse } from "./_types";
+import { User } from "@prisma/client";
+import * as jwt from "jsonwebtoken";
 
 const prisma = PrismaSingleton.getClient();
 
@@ -29,8 +31,21 @@ export async function getLoginGoogleUri() {
 
 export async function loginGoogle(code: string) {
   const idToken = await getIdToken(code);
-  const profile = await getGoogleProfile(idToken);
-  console.log(profile);
+  const googleProfile = await getGoogleProfile(idToken);
+  const profile = (await prisma.user.findFirst({ where: { email: googleProfile.email } })) as User;
+  if (!profile) throw new Error("User not found!");
+  const tokens = signTokenPair(profile.id);
+  return tokens;
+}
+
+function signTokenPair(userId: number) {
+  const accessToken = jwt.sign({}, process.env.ACCESS_TOKEN_SECRET || "", {
+    subject: String(userId)
+  });
+
+  const refreshToken = jwt.sign({}, process.env.REFRESH_TOKEN_SECRET || "", {
+    subject: String(userId)
+  });
 }
 
 export async function getProfile() {
@@ -60,6 +75,6 @@ async function getGoogleProfile(idToken: string) {
   const uri = new URL(ENDPOINT_GOOGLE_TOKEN_INFO);
   uri.searchParams.set("id_token", idToken);
   const response = await fetch(uri);
-  const data = await response.json();
+  const data = (await response.json()) as GoogleTokenInfoResponse;
   return data;
 }
