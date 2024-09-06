@@ -1,6 +1,6 @@
 "use client";
 
-import { Display, Divider, Loading, Page, Text } from "@geist-ui/core";
+import { Display, Divider, Page, Text } from "@geist-ui/core";
 import SignInForm from "./_components/SignInForm";
 import OtherLoginSection from "./_components/OtherLoginSection";
 import { useSearchParams } from "next/navigation";

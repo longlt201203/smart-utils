@@ -1,9 +1,11 @@
 "use server";
 
 import { PrismaSingleton } from "@/prisma";
-import { GoogleTokenInfoResponse, GoogleTokenResponse } from "./_types";
+import { GoogleTokenInfoResponse, GoogleTokenResponse, TokenPair } from "./_types";
 import { User } from "@prisma/client";
 import * as jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const prisma = PrismaSingleton.getClient();
 
@@ -14,6 +16,14 @@ const ENDPOINT_GOOGLE_TOKEN_INFO = "https://oauth2.googleapis.com/tokeninfo";
 const SCOPE_USER_INFO_EMAIL = "https://www.googleapis.com/auth/userinfo.email";
 const SCOPE_USER_INFO_PROFILE =
   "https://www.googleapis.com/auth/userinfo.profile";
+
+const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET || "";
+const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || "";
+const APP_BASE_URL = process.env.APP_BASE_URL || "";
+
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || "";
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || "";
+const GOOGLE_REDIRECT_URI = process.env.GOOGLE_REDIRECT_URI || "";
 
 export async function getLoginGoogleUri() {
   const uri = new URL(ENDPOINT_GOOGLE_OAUTH2);
@@ -34,31 +44,39 @@ export async function loginGoogle(code: string) {
   const googleProfile = await getGoogleProfile(idToken);
   const profile = (await prisma.user.findFirst({ where: { email: googleProfile.email } })) as User;
   if (!profile) throw new Error("User not found!");
-  const tokens = signTokenPair(profile.id);
-  return tokens;
+  const { accessToken, refreshToken } = signTokenPair(profile.id);
+  const cookieStore = cookies();
+  cookieStore.set(accessToken, "accessToken");
+  cookieStore.set(refreshToken, "refreshToken");
+  redirect("/");
 }
 
-function signTokenPair(userId: number) {
-  const accessToken = jwt.sign({}, process.env.ACCESS_TOKEN_SECRET || "", {
-    subject: String(userId)
+function signTokenPair(userId: number): TokenPair {
+  const accessToken = jwt.sign({}, ACCESS_TOKEN_SECRET, {
+    subject: String(userId),
+    issuer: APP_BASE_URL,
   });
 
-  const refreshToken = jwt.sign({}, process.env.REFRESH_TOKEN_SECRET || "", {
-    subject: String(userId)
+  const refreshToken = jwt.sign({}, REFRESH_TOKEN_SECRET, {
+    subject: String(userId),
+    issuer: APP_BASE_URL
   });
+
+  return { accessToken, refreshToken };
 }
 
 export async function getProfile() {
-  return await prisma.user.findFirst();
+  const profile = await authenticated();
+  return profile;
 }
 
 async function getIdToken(code: string) {
   const uri = new URL(ENDPOINT_GOOGLE_TOKEN);
   const requestBody = {
     code: code,
-    client_id: process.env.GOOGLE_CLIENT_ID || "",
-    client_secret: process.env.GOOGLE_CLIENT_SECRET || "",
-    redirect_uri: process.env.GOOGLE_REDIRECT_URI || "",
+    client_id: GOOGLE_CLIENT_ID,
+    client_secret: GOOGLE_CLIENT_SECRET,
+    redirect_uri: GOOGLE_REDIRECT_URI,
     grant_type: "authorization_code",
   };
   const response = await fetch(uri, {
@@ -77,4 +95,25 @@ async function getGoogleProfile(idToken: string) {
   const response = await fetch(uri);
   const data = (await response.json()) as GoogleTokenInfoResponse;
   return data;
+}
+
+function verifyAccessToken(token: string) {
+  return jwt.verify(token, ACCESS_TOKEN_SECRET, {
+    issuer: APP_BASE_URL,
+  })
+}
+
+function verifyRefreshToken(token: string) {
+  
+}
+
+function refreshToken() {
+
+}
+
+export async function authenticated() {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get("accessToken");
+
+  return await prisma.user.findFirst();
 }
