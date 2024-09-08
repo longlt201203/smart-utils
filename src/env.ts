@@ -1,0 +1,17 @@
+export const Env = {
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || "",
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || "",
+  GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI || "",
+
+  GOOGLE_GEMINI_API_KEY: process.env.GOOGLE_GEMINI_API_KEY || "",
+
+  ADMIN_EMAIL: process.env.ADMIN_EMAIL || "",
+
+  ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || "",
+  ACCESS_TOKEN_EXPIRES_AT: process.env.ACCESS_TOKEN_EXPIRES_AT || "",
+
+  REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || "",
+  REFRESH_TOKEN_EXPIRES_AT: process.env.REFRESH_TOKEN_EXPIRES_AT || "",
+
+  APP_BASE_URL: process.env.APP_BASE_URL || "",
+} as const;

@@ -1,4 +1,4 @@
-import { getLoginGoogleUri } from "@/app/_actions/auth";
+import { redirectLoginGoogle } from "@/app/_actions/auth";
 import { Button } from "@geist-ui/core";
 import GoogleIcon from "@mui/icons-material/Google";
 
@@ -8,8 +8,7 @@ export default function LoginGoogleButton({
   disabled?: boolean;
 }) {
   const handleLoginGoogle = async () => {
-    const uri = await getLoginGoogleUri();
-    window.location.href = uri;
+    await redirectLoginGoogle();
   };
 
   return (
